@@ -1,0 +1,10 @@
+metadata: {id: http_records_default, title: HTTP with default JSON format}
+sources:
+  input:
+    source: http
+    url: https://example.com/data
+    recordsPath: [data, items]
+dataset:
+  id: data
+  sources: [{id: raw, ref: '#/sources/input'}]
+chart: {dataset: data, renderer: echarts, option: {series: [{type: line, data: {from: data, field: value}}]}}

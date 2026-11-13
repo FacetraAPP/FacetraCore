@@ -1,0 +1,32 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    chart_title: {zh-Hans: 月度收入, en: Monthly revenue}
+    chart_notes: {zh-Hans: 示例收入图, en: Sample revenue chart}
+    months_label: {zh-Hans: 月数, en: Months}
+    revenue_label: {zh-Hans: 收入, en: Revenue}
+metadata:
+  id: localized_sales
+  title: {i18n: nonexistent}
+  notes: {i18n: chart_notes}
+params:
+  - {name: months, type: integer, default: 12, label: {i18n: months_label}}
+sources:
+  input: {source: duckdb, file: data/sales.csv}
+dataset:
+  id: sales
+  sources: [{id: raw, ref: '#/sources/input'}]
+  sql: SELECT month, revenue FROM raw LIMIT $months
+chart:
+  dataset: sales
+  renderer: echarts
+  option:
+    legend: {}
+    xAxis: {type: category, data: {from: sales, field: month}}
+    yAxis: {type: value, name: {i18n: revenue_label}}
+    dataZoom: [{id: zoom, type: inside}]
+    series:
+      - id: revenue
+        name: {i18n: revenue_label}
+        type: bar
+        data: {from: sales, field: revenue}

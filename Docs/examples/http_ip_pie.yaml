@@ -1,0 +1,36 @@
+params: []
+sources:
+  connection:
+    source: http
+    method: get
+    url: "{{ connections.http_example.endpoint }}"
+    params: { format: json }
+    format: json
+dataset:
+  id: network
+  sources:
+    - { id: raw, ref: "#/sources/connection" }
+  sql: |-
+    WITH segments AS (
+      SELECT CAST(ip AS VARCHAR) AS ip, position,
+             TRY_CAST(split_part(CAST(ip AS VARCHAR), '.', position) AS INTEGER) AS octet
+      FROM raw CROSS JOIN range(1, 5) AS positions(position)
+    )
+    SELECT '第' || position || '段' AS segment,
+           CASE WHEN regexp_full_match(ip, '[0-9]{1,3}([.][0-9]{1,3}){3}') AND octet BETWEEN 0 AND 255
+                THEN octet ELSE error('HTTP example requires a valid IPv4 address.') END AS value
+    FROM segments ORDER BY position
+metadata:
+  id: http_ip_pie
+  title: HTTP 示例 · IP 分段
+  notes: 通过 HTTP 获取公网 IPv4，将四段数字转换为饼图扇区。扇区大小按每段数值占总和的比例计算。
+chart:
+  dataset: network
+  renderer: echarts
+  option:
+    tooltip: {trigger: item, confine: true}
+    series:
+      - type: pie
+        radius: 65%
+        encode: {itemName: segment, value: value}
+        data: {from: network, rows: true}

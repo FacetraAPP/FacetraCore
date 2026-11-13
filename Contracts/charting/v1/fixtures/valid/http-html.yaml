@@ -1,0 +1,35 @@
+{
+  "metadata": {
+    "id": "collection",
+    "title": "HTTP collection"
+  },
+  "sources": {
+    "details": {
+      "source": "http",
+      "url": "https://example.com",
+      "format": "html",
+      "extract": {
+        "rows": "article",
+        "fields": {
+          "title": {
+            "selector": "h2"
+          }
+        }
+      }
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "raw",
+        "ref": "#/sources/details"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "value",
+    "value": "id"
+  }
+}

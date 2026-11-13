@@ -1,0 +1,24 @@
+params:
+  - { name: minimum, type: number, default: 100 }
+sources:
+  orders:
+    source: sqlite
+    file_path: databases/orders.sqlite
+    sql: SELECT created_at, amount FROM orders WHERE amount >= $minimum
+dataset:
+  id: orders
+  sources:
+    - { id: raw, ref: "#/sources/orders" }
+metadata:
+  id: sqlite_orders
+  title: SQLite 订单
+chart:
+  dataset: orders
+  renderer: echarts
+  option:
+    tooltip: {trigger: axis}
+    grid: {left: 12, right: 18, top: 24, bottom: 24, containLabel: true}
+    xAxis: {type: category, data: {from: orders, field: created_at}}
+    yAxis: {type: value, scale: true}
+    series:
+      - {type: line, data: {from: orders, field: amount}, showSymbol: false}

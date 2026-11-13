@@ -1,0 +1,15 @@
+version: 1
+kind: Dashboard
+i18n:
+  defaultLocale: en
+  messages:
+    chart_title: {en: Revenue overview, zh-Hans: 收入概览}
+    main_tab: {en: Overview, zh-Hans: 概览}
+metadata:
+  id: localized_dashboard
+  title: {i18n: chart_title}
+params: []
+tabs:
+  - id: main
+    title: {i18n: main_tab}
+    panels: [{id: sales, chart: localized_sales}]

@@ -1,0 +1,31 @@
+params:
+  - { name: symbol, label: 股票代码, type: string, default: "600519.SH", options: ["600519.SH", "300750.SZ", "000001.SZ"] }
+  - { name: days, label: 交易日数, type: integer, default: 60, minimum: 1, maximum: 180, options: [30, 60, 120, 180] }
+sources: {}
+dataset:
+  id: volume
+  sources:
+    - id: prices
+      ref: "example_price.yaml#/sources/prices"
+      with:
+        symbol: { param: symbol }
+  sql: |
+    WITH recent AS (
+      SELECT CAST(trade_date AS DATE) AS trade_date, CAST(volume AS BIGINT) AS volume
+      FROM prices WHERE symbol = $symbol
+      ORDER BY trade_date DESC LIMIT $days
+    )
+    SELECT * FROM recent ORDER BY trade_date
+metadata:
+  id: example_volume
+  title: 成交量
+chart:
+  dataset: volume
+  renderer: echarts
+  option:
+    tooltip: {trigger: axis}
+    grid: {left: 12, right: 18, top: 24, bottom: 24, containLabel: true}
+    xAxis: {type: category, data: {from: volume, field: trade_date}}
+    yAxis: {type: value, scale: true}
+    series:
+      - {type: bar, data: {from: volume, field: volume}}

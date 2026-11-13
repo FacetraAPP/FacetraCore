@@ -1,0 +1,569 @@
+[
+  {
+    "file": "valid/native.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/date.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/echarts.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/vela.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/http.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/sqlite.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/nullable.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/dashboard.yaml",
+    "kind": "dashboard",
+    "structure": true,
+    "valid": true,
+    "documents": [
+      "valid/native.yaml"
+    ]
+  },
+  {
+    "file": "valid/empty-dashboard.yaml",
+    "kind": "dashboard",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "invalid/unknown-field.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "structure.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/metadata-required.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "structure.invalid",
+    "path": "/metadata"
+  },
+  {
+    "file": "invalid/quoted-integer.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "chart.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/invalid-date.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "chart.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/invalid-bounds.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "chart.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/duplicate-parameter.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "chart.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/unsafe-path.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "chart.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/unknown-renderer.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "structure.invalid",
+    "path": "/chart/renderer"
+  },
+  {
+    "file": "invalid/renderer-fields.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "structure.invalid",
+    "path": "/chart"
+  },
+  {
+    "file": "invalid/unknown-source-field.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "structure.invalid",
+    "path": "/sources/input"
+  },
+  {
+    "file": "invalid/missing-reference.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "reference.missing",
+    "path": "/dataset/sources"
+  },
+  {
+    "file": "invalid/invalid-reference.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "reference.syntax",
+    "path": "/dataset/sources"
+  },
+  {
+    "file": "invalid/source-cycle.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "reference.cycle",
+    "path": ""
+  },
+  {
+    "file": "invalid/options-cycle.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "parameter.options_cycle",
+    "path": "/params/0/options"
+  },
+  {
+    "file": "invalid/duplicate-key.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "yaml.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/nonfinite.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "yaml.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/nonstring-key.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "yaml.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/grid-width.yaml",
+    "kind": "dashboard",
+    "structure": false,
+    "valid": false,
+    "documents": [
+      "valid/native.yaml"
+    ],
+    "code": "structure.invalid",
+    "path": "/tabs/0/panels/0/width"
+  },
+  {
+    "file": "invalid/short-card.yaml",
+    "kind": "dashboard",
+    "structure": true,
+    "valid": false,
+    "documents": [
+      "valid/native.yaml"
+    ],
+    "code": "dashboard.layout",
+    "path": "/tabs/0/panels/0"
+  },
+  {
+    "file": "invalid/legacy-fields.yaml",
+    "kind": "dashboard",
+    "structure": false,
+    "valid": false,
+    "documents": [
+      "valid/native.yaml"
+    ],
+    "code": "structure.invalid",
+    "path": ""
+  },
+  {
+    "file": "invalid/duplicate-panels.yaml",
+    "kind": "dashboard",
+    "structure": true,
+    "valid": false,
+    "documents": [
+      "valid/native.yaml"
+    ],
+    "code": "resource.duplicate",
+    "path": "/tabs/0/panels/1"
+  },
+  {
+    "file": "references/provider.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "references/consumer.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": [
+      "references/provider.yaml"
+    ]
+  },
+  {
+    "file": "references/bad-binding.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [
+      "references/provider.yaml"
+    ],
+    "code": "binding.missing",
+    "path": "/dataset/ref"
+  },
+  {
+    "file": "valid/required-input.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/merge.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/http-null.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "invalid/sql-parameter.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "parameter.reference",
+    "path": "/dataset/sql"
+  },
+  {
+    "file": "references/cycle-a.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [
+      "references/cycle-b.yaml"
+    ],
+    "code": "reference.cycle",
+    "path": ""
+  },
+  {
+    "file": "references/cycle-b.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [
+      "references/cycle-a.yaml"
+    ],
+    "code": "reference.cycle",
+    "path": ""
+  },
+  {
+    "file": "references/options-provider.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "references/options-consumer.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": [
+      "references/options-provider.yaml"
+    ]
+  },
+  {
+    "file": "invalid/shared-resource-id.yaml",
+    "kind": "dashboard",
+    "structure": true,
+    "valid": false,
+    "documents": [
+      "valid/native.yaml"
+    ],
+    "code": "resource.duplicate",
+    "path": "/metadata/id"
+  },
+  {
+    "file": "invalid/source-format.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "structure.invalid",
+    "path": "/sources/input"
+  },
+  {
+    "file": "valid/http-records-default.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "references/source-consumer.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": [
+      "references/options-provider.yaml"
+    ]
+  },
+  {
+    "file": "valid/localized.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/localized-dashboard.yaml",
+    "kind": "dashboard",
+    "structure": true,
+    "valid": true,
+    "documents": [
+      "valid/localized.yaml"
+    ]
+  },
+  {
+    "file": "invalid/i18n-missing.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "i18n.missing",
+    "path": "/metadata/title"
+  },
+  {
+    "file": "invalid/i18n-default.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "i18n.invalid",
+    "path": "/i18n/messages/chart_title"
+  },
+  {
+    "file": "valid/parameter-width.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/dashboard-parameter-width.yaml",
+    "kind": "dashboard",
+    "structure": true,
+    "valid": true,
+    "documents": [
+      "valid/native.yaml"
+    ]
+  },
+  {
+    "file": "invalid/parameter-width.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": [],
+    "code": "structure.invalid",
+    "path": "/params/0/width"
+  },
+  {
+    "file": "valid/html.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/vega-lite.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "invalid/html-script.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": []
+  },
+  {
+    "file": "invalid/html-missing-markup.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": []
+  },
+  {
+    "file": "invalid/vega-scripts.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": []
+  },
+  {
+    "file": "valid/source-dag.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "invalid/source-dag-missing.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "reference.missing"
+  },
+  {
+    "file": "invalid/source-dag-cycle.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "reference.cycle"
+  },
+  {
+    "file": "invalid/source-dag-duplicate.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": []
+  },
+  {
+    "file": "invalid/source-dag-undeclared.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": [],
+    "code": "chart.invalid"
+  },
+  {
+    "file": "valid/http-collection.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/http-html.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "valid/http-xml.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": true,
+    "documents": []
+  },
+  {
+    "file": "invalid/http-collection-scope.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": []
+  },
+  {
+    "file": "invalid/http-collection-expression.yaml",
+    "kind": "chart",
+    "structure": true,
+    "valid": false,
+    "documents": []
+  },
+  {
+    "file": "invalid/http-collection-limit.yaml",
+    "kind": "chart",
+    "structure": false,
+    "valid": false,
+    "documents": []
+  }
+]

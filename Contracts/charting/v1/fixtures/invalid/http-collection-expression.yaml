@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "id": "collection",
+    "title": "HTTP collection"
+  },
+  "sources": {
+    "details": {
+      "source": "http",
+      "url": "https://example.com",
+      "pagination": {
+        "initial": {},
+        "next": "loop {}"
+      }
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "raw",
+        "ref": "#/sources/details"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "value",
+    "value": "id"
+  }
+}

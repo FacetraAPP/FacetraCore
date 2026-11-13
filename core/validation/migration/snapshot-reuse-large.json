@@ -1,0 +1,19 @@
+{
+  "engine" : "Rust bundled DuckDB 1.4.4",
+  "median_ms" : 2216.1713340000001,
+  "mode" : "snapshot-reuse",
+  "payload_bytes" : 4667954,
+  "samples_ms" : [
+    2229.011708,
+    2211.9845,
+    2231.8445000000002,
+    2204.6378749999999,
+    2223.2859170000002,
+    2218.4487909999998,
+    2213.169625,
+    2194.092541,
+    2216.1713340000001
+  ],
+  "scenario" : "large",
+  "transport" : "statically linked session ABI v1, payload only"
+}

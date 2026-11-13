@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "id": "vela",
+    "title": "Native chart"
+  },
+  "sources": {
+    "input": {
+      "source": "duckdb",
+      "file": "data/input.csv"
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "input",
+        "ref": "#/sources/input"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "vela",
+    "option": {
+      "time": "time",
+      "open": "open",
+      "high": "high",
+      "low": "low",
+      "close": "close"
+    }
+  }
+}

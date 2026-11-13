@@ -1,0 +1,8 @@
+target/
+renderers/node_modules/
+__pycache__/
+*.pyc
+*.png
+!renderers/**/*.png
+.DS_Store
+

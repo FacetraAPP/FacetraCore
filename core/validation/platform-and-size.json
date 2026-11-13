@@ -1,0 +1,80 @@
+{
+  "artifact_file_bytes": {
+    "RustCore/target/aarch64-apple-ios-sim/release/libfacetra_pipeline.a": 119043656,
+    "RustCore/target/aarch64-apple-ios/release/libfacetra_pipeline.a": 117062320,
+    "RustCore/target/release/libfacetra_pipeline.a": 119494968,
+    "RustCore/target/release/libfacetra_pipeline.dylib": 39771624,
+    "build/common-cargo/release/libfacetra_pipeline.dylib": 2284424,
+    "build/common-duckdb/libduckdb.dylib": 79081840,
+    "build/rust-ios/device/FacetraRustSmoke.app/FacetraRustSmoke": 46062984,
+    "build/rust-ios/simulator/FacetraRustSmoke.app/FacetraRustSmoke": 46336608
+  },
+  "cache_allocated_bytes": {
+    ".build": 4001886208,
+    "RustCore/target": 2672144384,
+    "build/common-cargo": 579248128
+  },
+  "date": "2026-10-10",
+  "note": "Cache du values use allocated bytes; artifacts use file bytes. XCFramework duplicates archives from target. Smoke app sizes are uncompressed, simulator includes test fixtures. Shipping Facetra app size and physical-device runtime are unmeasured.",
+  "packaged_directory_allocated_bytes": {
+    "build/FacetraPipeline.xcframework": 236130304,
+    "build/rust-ios/device/FacetraRustSmoke.app": 46067712,
+    "build/rust-ios/simulator/FacetraRustSmoke.app": 55599104,
+    "build/rust-ios/simulator/FacetraRustSmoke.app/fixtures": 9236480
+  },
+  "targets": {
+    "ios_device": {
+      "architecture": "arm64",
+      "compile": true,
+      "host_minimum": "26.6",
+      "link": true,
+      "pipeline_runtime": false,
+      "rust_minimum": "17.0",
+      "sdk": "27.0",
+      "signed": false
+    },
+    "ios_simulator": {
+      "architecture": "arm64",
+      "compile": true,
+      "duckdb": "v1.4.4",
+      "fixtures": 16,
+      "host_minimum": "26.6",
+      "link": true,
+      "os": "27.0",
+      "pipeline_runtime": true,
+      "rust_minimum": "17.0",
+      "sdk": "27.0"
+    },
+    "macos": {
+      "architecture": "arm64",
+      "compile": true,
+      "link": true,
+      "pipeline_runtime": true,
+      "rust_minimum": "14.0",
+      "sdk": "27.0"
+    }
+  },
+  "xcframework_libraries": [
+    {
+      "BinaryPath": "libfacetra_pipeline.a",
+      "HeadersPath": "Headers",
+      "LibraryIdentifier": "ios-arm64-simulator",
+      "LibraryPath": "libfacetra_pipeline.a",
+      "SupportedArchitectures": [
+        "arm64"
+      ],
+      "SupportedPlatform": "ios",
+      "SupportedPlatformVariant": "simulator"
+    },
+    {
+      "BinaryPath": "libfacetra_pipeline.a",
+      "HeadersPath": "Headers",
+      "LibraryIdentifier": "ios-arm64",
+      "LibraryPath": "libfacetra_pipeline.a",
+      "SupportedArchitectures": [
+        "arm64"
+      ],
+      "SupportedPlatform": "ios"
+    }
+  ]
+}

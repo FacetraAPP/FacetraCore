@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "id": "collection",
+    "title": "HTTP collection"
+  },
+  "sources": {
+    "list": {
+      "source": "http",
+      "url": "https://example.com/list",
+      "recordsPath": [
+        "items"
+      ]
+    },
+    "details": {
+      "source": "http",
+      "depends_on": [
+        "list"
+      ],
+      "foreach": {
+        "source": "list",
+        "max_items": 20
+      },
+      "url": "https://example.com/details",
+      "params": {
+        "id": "{{ item.id }}",
+        "page": "{{ page.n }}"
+      },
+      "pagination": {
+        "initial": {
+          "n": 1
+        },
+        "next": "if page.n < 2 { #{n: page.n + 1} } else { () }",
+        "max_pages": 2
+      }
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "raw",
+        "ref": "#/sources/details"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "value",
+    "value": "id"
+  }
+}

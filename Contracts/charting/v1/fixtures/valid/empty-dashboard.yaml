@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "kind": "Dashboard",
+  "metadata": {
+    "id": "empty",
+    "title": "Empty"
+  },
+  "tabs": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "panels": []
+    }
+  ]
+}

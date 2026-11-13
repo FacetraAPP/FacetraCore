@@ -1,0 +1,19 @@
+{
+  "engine" : "Rust bundled DuckDB 1.4.4",
+  "median_ms" : 2228.6325000000002,
+  "mode" : "cold",
+  "payload_bytes" : 4667954,
+  "samples_ms" : [
+    2236.7329169999998,
+    2285.735917,
+    2238.967208,
+    2224.0299580000001,
+    2214.5272909999999,
+    2228.6325000000002,
+    2240.0217499999999,
+    2227.8933339999999,
+    2201.3422500000001
+  ],
+  "scenario" : "large",
+  "transport" : "statically linked session ABI v1, payload only"
+}

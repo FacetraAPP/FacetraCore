@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "id": "cycle_b",
+    "title": "Native chart"
+  },
+  "sources": {},
+  "dataset": {
+    "id": "data",
+    "ref": "cycle_a.yaml#/dataset"
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "echarts",
+    "option": {
+      "series": [
+        {
+          "type": "line",
+          "data": {
+            "from": "data",
+            "field": "value"
+          }
+        }
+      ]
+    }
+  }
+}

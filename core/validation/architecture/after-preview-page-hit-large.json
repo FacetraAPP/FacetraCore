@@ -1,0 +1,19 @@
+{
+  "engine" : "Rust bundled DuckDB 1.4.4",
+  "median_ms" : 11.556791,
+  "mode" : "preview-page-hit",
+  "payload_bytes" : 6014,
+  "samples_ms" : [
+    12.201290999999999,
+    11.442083,
+    11.317042000000001,
+    11.466834,
+    11.907999999999999,
+    11.556791,
+    11.267208999999999,
+    12.014291,
+    11.615417000000001
+  ],
+  "scenario" : "large",
+  "transport" : "Frozen native preview -> first 256 rows"
+}

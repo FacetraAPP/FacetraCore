@@ -1,0 +1,5 @@
+[env]
+# Match the shared Swift package's floor; the app currently deploys to 26.6.
+# Explicit values prevent a developer's current OS from raising archive minima.
+MACOSX_DEPLOYMENT_TARGET = { value = "14.0", force = true }
+IPHONEOS_DEPLOYMENT_TARGET = { value = "17.0", force = true }

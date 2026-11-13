@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": "nullable",
+    "title": "Native chart"
+  },
+  "sources": {
+    "input": {
+      "source": "duckdb",
+      "file": "data/input.csv"
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "input",
+        "ref": "#/sources/input"
+      }
+    ],
+    "sql": null
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "echarts",
+    "option": {
+      "series": [
+        {
+          "type": "line",
+          "data": {
+            "from": "data",
+            "field": "value"
+          }
+        }
+      ]
+    }
+  },
+  "params": [
+    {
+      "name": "q",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "options": null
+    }
+  ]
+}

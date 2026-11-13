@@ -1,0 +1,4 @@
+Release, Apple Swift 6.4 / Xcode 27.0
+Command: swift test -c release --skip-build --no-parallel
+107 tests in 4 suites passed, 11.112 seconds. Rust opt-in suites disabled.
+Initial default parallel run: MySQL migration expectation failed and process did not finish after >2 minutes; test helper was terminated. The same migration test passed isolated (4 connector cases), then the complete suite passed serially. Production Swift sources were unchanged.

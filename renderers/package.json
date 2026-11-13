@@ -1,0 +1,8 @@
+{
+  "name": "@facetra/renderers",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "playwright": "1.65.0"
+  }
+}

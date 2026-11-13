@@ -1,0 +1,19 @@
+{
+  "engine" : "Rust bundled DuckDB 1.4.4",
+  "median_ms" : 53.032832999999997,
+  "mode" : "renderer-hit",
+  "payload_bytes" : 4667968,
+  "samples_ms" : [
+    52.923999999999999,
+    53.914875000000002,
+    53.031750000000002,
+    53.484833000000002,
+    52.306125000000002,
+    53.072166000000003,
+    53.810583000000001,
+    52.782083,
+    53.032832999999997
+  ],
+  "scenario" : "large",
+  "transport" : "Rust source\/dataset\/render cache -> final JSON"
+}

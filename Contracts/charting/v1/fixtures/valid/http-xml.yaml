@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "id": "collection",
+    "title": "HTTP collection"
+  },
+  "sources": {
+    "details": {
+      "source": "http",
+      "url": "https://example.com",
+      "format": "xml",
+      "extract": {
+        "rows": "/a:feed/a:entry",
+        "namespaces": {
+          "a": "urn:atom"
+        },
+        "fields": {
+          "title": {
+            "selector": "a:title"
+          }
+        }
+      }
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "raw",
+        "ref": "#/sources/details"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "value",
+    "value": "id"
+  }
+}

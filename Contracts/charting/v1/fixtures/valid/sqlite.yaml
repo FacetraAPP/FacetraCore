@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "id": "sqlite",
+    "title": "Native chart"
+  },
+  "sources": {
+    "input": {
+      "source": "sqlite",
+      "file_path": "orders.sqlite",
+      "sql": "SELECT * FROM orders"
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "input",
+        "ref": "#/sources/input"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "echarts",
+    "option": {
+      "series": [
+        {
+          "type": "line",
+          "data": {
+            "from": "data",
+            "field": "value"
+          }
+        }
+      ]
+    }
+  }
+}

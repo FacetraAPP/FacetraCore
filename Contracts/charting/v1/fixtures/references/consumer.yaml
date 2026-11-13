@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "id": "consumer",
+    "title": "Native chart"
+  },
+  "sources": {},
+  "dataset": {
+    "id": "data",
+    "ref": "provider.yaml#/dataset",
+    "with": {
+      "n": {
+        "param": "count"
+      }
+    }
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "echarts",
+    "option": {
+      "series": [
+        {
+          "type": "line",
+          "data": {
+            "from": "data",
+            "field": "value"
+          }
+        }
+      ]
+    }
+  },
+  "params": [
+    {
+      "name": "count",
+      "type": "integer",
+      "default": 3
+    }
+  ]
+}

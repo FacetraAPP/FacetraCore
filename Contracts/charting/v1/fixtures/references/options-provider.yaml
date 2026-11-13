@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "id": "options_provider",
+    "title": "Native chart"
+  },
+  "sources": {
+    "input": {
+      "source": "http",
+      "url": "https://example.com/choices"
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "input",
+        "ref": "#/sources/input"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "echarts",
+    "option": {
+      "series": [
+        {
+          "type": "line",
+          "data": {
+            "from": "data",
+            "field": "value"
+          }
+        }
+      ]
+    }
+  },
+  "params": [
+    {
+      "name": "unrelated",
+      "type": "integer"
+    }
+  ]
+}

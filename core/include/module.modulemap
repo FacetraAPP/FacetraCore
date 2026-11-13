@@ -1,0 +1,4 @@
+module FacetraPipeline {
+    header "facetra_pipeline.h"
+    export *
+}

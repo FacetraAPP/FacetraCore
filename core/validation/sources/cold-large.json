@@ -1,0 +1,19 @@
+{
+  "engine" : "Rust bundled DuckDB 1.4.4",
+  "median_ms" : 920.46295899999996,
+  "mode" : "cold",
+  "payload_bytes" : 4667954,
+  "samples_ms" : [
+    936.37400000000002,
+    915.25341700000001,
+    932.23566700000003,
+    899.05041700000004,
+    936.30570899999998,
+    917.01187500000003,
+    918.87874999999997,
+    928.47445800000003,
+    920.46295899999996
+  ],
+  "scenario" : "large",
+  "transport" : "Rust source\/dataset -> typed DataFrame -> Swift ECharts"
+}

@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "id": "parameter_width",
+    "title": "Native chart"
+  },
+  "sources": {
+    "input": {
+      "source": "duckdb",
+      "file": "data/input.csv"
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "input",
+        "ref": "#/sources/input"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "echarts",
+    "option": {
+      "series": [
+        {
+          "type": "line",
+          "data": {
+            "from": "data",
+            "field": "value"
+          }
+        }
+      ]
+    }
+  },
+  "params": [
+    {
+      "name": "bank",
+      "label": "报价行",
+      "type": "string",
+      "default": "中国银行",
+      "width": 0,
+      "options": [
+        "中国银行",
+        "工商银行"
+      ]
+    },
+    {
+      "name": "day",
+      "type": "date",
+      "default": "2026-08-01",
+      "width": 150.5
+    },
+    {
+      "name": "auto",
+      "type": "boolean",
+      "default": true,
+      "width": null
+    }
+  ]
+}

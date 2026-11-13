@@ -1,0 +1,43 @@
+params:
+  - {name: ma_length, label: 均线周期, type: integer, default: 10, minimum: 1, maximum: 5000}
+
+sources:
+  prices: {source: duckdb, file: data/example/echarts-ohlcv.csv}
+
+dataset:
+  id: candles
+  sources: [{id: raw, ref: '#/sources/prices'}]
+  sql: |
+    SELECT CAST(trade_date AS DATE) AS time,
+           CAST(open AS DOUBLE) AS open, CAST(high AS DOUBLE) AS high,
+           CAST(low AS DOUBLE) AS low, CAST(close AS DOUBLE) AS close,
+           CAST(volume AS BIGINT) AS volume
+    FROM raw
+    ORDER BY time
+
+metadata:
+  id: vela_ohlcv
+  title: Vela · K 线与技术指标
+chart:
+  dataset: candles
+  renderer: vela
+  option:
+    time: time
+    open: open
+    high: high
+    low: low
+    close: close
+    volume: volume
+    time_unit: iso8601
+    timeframe: 1d
+    indicators:
+      - type: sma
+        inputs: {length: {from: params, name: ma_length}, color: '#f59e0b'}
+      - type: ema
+        inputs: {length: 20, color: '#3b82f6'}
+      - type: bollinger-bands
+        inputs: {length: 20, mult: 2}
+      - type: rsi
+        inputs: {length: 14}
+      - type: macd
+        inputs: {fastLength: 12, slowLength: 26, signalLength: 9}

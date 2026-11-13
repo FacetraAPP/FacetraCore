@@ -1,0 +1,37 @@
+params:
+  - { name: symbol, type: string, default: "600519.SH" }
+  - { name: limit, type: integer, default: 60, minimum: 1, maximum: 1000 }
+sources:
+  prices:
+    source: http
+    method: post
+    url: "{{ connections.market.endpoint }}"
+    headers:
+      X-API-Key: "{{ connections.market.api_key }}"
+    json:
+      token: "{{ connections.market.token }}"
+      options:
+        symbol: "{{ params.symbol }}"
+        limit: "{{ params.limit }}"
+    format: json
+    recordsPath: [data, items]
+dataset:
+  id: prices
+  sources:
+    - { id: raw, ref: "#/sources/prices" }
+  sql: |
+    SELECT CAST(trade_date AS DATE) AS trade_date, CAST(close AS DOUBLE) AS close
+    FROM raw ORDER BY trade_date
+metadata:
+  id: http_post
+  title: HTTP POST 行情
+chart:
+  dataset: prices
+  renderer: echarts
+  option:
+    tooltip: {trigger: axis}
+    grid: {left: 12, right: 18, top: 24, bottom: 24, containLabel: true}
+    xAxis: {type: category, data: {from: prices, field: trade_date}}
+    yAxis: {type: value, scale: true}
+    series:
+      - {type: line, data: {from: prices, field: close}, showSymbol: false}

@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "id": "vega_contract",
+    "title": "HTML"
+  },
+  "sources": {
+    "input": {
+      "source": "duckdb",
+      "file": "data/input.csv"
+    }
+  },
+  "dataset": {
+    "id": "values",
+    "sources": [
+      {
+        "id": "raw",
+        "ref": "#/sources/input"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "values",
+    "renderer": "vega_lite",
+    "option": {
+      "data": {
+        "values": {
+          "from": "values",
+          "rows": true
+        }
+      },
+      "mark": "bar",
+      "encoding": {
+        "x": {
+          "field": "label",
+          "type": "nominal"
+        },
+        "y": {
+          "field": "value",
+          "type": "quantitative"
+        }
+      }
+    },
+    "scripts": {
+      "run": "() => 1"
+    }
+  }
+}

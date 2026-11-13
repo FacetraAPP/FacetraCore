@@ -1,0 +1,61 @@
+version: 1
+kind: Dashboard
+metadata:
+  id: example_dashboard
+  title: 个股分析
+  notes: 选择共享参数后点应用。近期成交固定 30 个交易日。
+params:
+  - { name: symbol, label: 股票代码, type: string, default: "600519.SH", options: ["600519.SH", "300750.SZ", "000001.SZ"] }
+  - { name: days, label: 交易日数, type: integer, default: 60, minimum: 1, maximum: 180, options: [30, 60, 120, 180] }
+  - { name: ma_window, label: 均线窗口, type: integer, default: 20, minimum: 2, maximum: 60, advanced: true }
+tabs:
+  - id: overview
+    title: 概览
+    panels:
+      - id: price_main
+        chart: example_price
+        height: 240
+        params:
+          symbol: { param: symbol }
+          days: { param: days }
+          ma_window: { param: ma_window }
+      - id: volume_main
+        chart: example_volume
+        height: 200
+        params:
+          symbol: { param: symbol }
+          days: { param: days }
+  - id: detail
+    title: 近期成交
+    panels:
+      - id: volume_recent
+        chart: example_volume
+        height: 240
+        params:
+          symbol: { param: symbol }
+          days: 30
+  - id: mosaic
+    title: Mosaic
+    layout: {type: grid, columns: 12, row_height: 40, gap: 12, min_width: 1200}
+    panels:
+      - id: mosaic_price
+        chart: example_price
+        width: 7
+        row_span: 10
+        responsive: {compact: {card_height: 360}}
+        params:
+          symbol: {param: symbol}
+          days: {param: days}
+          ma_window: {param: ma_window}
+      - id: mosaic_monthly
+        chart: example_monthly
+        width: 5
+        row_span: 4
+        responsive: {compact: {card_height: 260}}
+        params: {symbol: {param: symbol}}
+      - id: mosaic_volume
+        chart: example_volume
+        width: 5
+        row_span: 6
+        responsive: {compact: {card_height: 320}}
+        params: {symbol: {param: symbol}, days: {param: days}}

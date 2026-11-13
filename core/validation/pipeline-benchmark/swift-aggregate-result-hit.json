@@ -1,0 +1,83 @@
+{
+  "backend" : "swift",
+  "cache" : "result-hit",
+  "duckdb" : "v1.6.0-dev11145",
+  "input_rows" : 100000,
+  "median_ms" : {
+    "echarts_prepare" : 0.015583,
+    "response_encode" : 0.25379200000000002,
+    "result_cache_lookup" : 0.0019580000000000001,
+    "total" : 0.56795799999999996,
+    "yaml_and_resolve" : 0.27620899999999998
+  },
+  "note" : "Swift test executable statically links Swift DuckDB; Rust modes additionally dlopen Rust DuckDB. RSS includes harness and fixture generation.",
+  "output_bytes" : 5554,
+  "output_rows" : 100,
+  "process_peak_rss_mib" : 113.546875,
+  "samples_ms" : [
+    {
+      "echarts_prepare" : 0.020458,
+      "response_encode" : 0.43679200000000001,
+      "result_cache_lookup" : 0.018124999999999999,
+      "total" : 1.0338750000000001,
+      "yaml_and_resolve" : 0.53654199999999996
+    },
+    {
+      "echarts_prepare" : 0.015583,
+      "response_encode" : 0.25379200000000002,
+      "result_cache_lookup" : 0.0026250000000000002,
+      "total" : 0.59275,
+      "yaml_and_resolve" : 0.31116700000000003
+    },
+    {
+      "echarts_prepare" : 0.015458,
+      "response_encode" : 0.25933299999999998,
+      "result_cache_lookup" : 0.0019580000000000001,
+      "total" : 0.56179100000000004,
+      "yaml_and_resolve" : 0.27620899999999998
+    },
+    {
+      "echarts_prepare" : 0.01575,
+      "response_encode" : 0.25795800000000002,
+      "result_cache_lookup" : 0.001709,
+      "total" : 0.55312499999999998,
+      "yaml_and_resolve" : 0.26920899999999998
+    },
+    {
+      "echarts_prepare" : 0.036207999999999997,
+      "response_encode" : 0.26237500000000002,
+      "result_cache_lookup" : 0.0016249999999999999,
+      "total" : 0.57925000000000004,
+      "yaml_and_resolve" : 0.267625
+    },
+    {
+      "echarts_prepare" : 0.015916,
+      "response_encode" : 0.25054199999999999,
+      "result_cache_lookup" : 0.0037499999999999999,
+      "total" : 0.63933300000000004,
+      "yaml_and_resolve" : 0.35966700000000001
+    },
+    {
+      "echarts_prepare" : 0.015542,
+      "response_encode" : 0.248166,
+      "result_cache_lookup" : 0.0023749999999999999,
+      "total" : 0.56795799999999996,
+      "yaml_and_resolve" : 0.292958
+    },
+    {
+      "echarts_prepare" : 0.015375,
+      "response_encode" : 0.247667,
+      "result_cache_lookup" : 0.0018749999999999999,
+      "total" : 0.54212499999999997,
+      "yaml_and_resolve" : 0.26883299999999999
+    },
+    {
+      "echarts_prepare" : 0.015167,
+      "response_encode" : 0.247666,
+      "result_cache_lookup" : 0.001709,
+      "total" : 0.53612499999999996,
+      "yaml_and_resolve" : 0.26350000000000001
+    }
+  ],
+  "scenario" : "aggregate"
+}

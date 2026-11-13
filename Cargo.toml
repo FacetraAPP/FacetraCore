@@ -1,0 +1,21 @@
+[workspace]
+resolver = "2"
+members = ["contract", "core", "cli"]
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.90"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/FacetraAPP/FacetraCore"
+
+[profile.release]
+debug = 0
+strip = "none"
+
+# DuckDB is built from C++; full debug symbols dominate local artifact size.
+# The validation workflow uses --release throughout to reuse one host profile.
+[profile.dev]
+debug = 0
+strip = "none"
+incremental = false
+

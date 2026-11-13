@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "kind": "Dashboard",
+  "metadata": {
+    "id": "dashboard_parameter_width",
+    "title": "Dashboard"
+  },
+  "tabs": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "layout": {
+        "type": "grid"
+      },
+      "panels": [
+        {
+          "id": "first",
+          "chart": "native",
+          "width": 6,
+          "row_span": 4,
+          "responsive": {
+            "compact": {
+              "card_height": 240
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "params": [
+    {
+      "name": "bank",
+      "type": "string",
+      "default": "中国银行",
+      "width": 320
+    }
+  ]
+}

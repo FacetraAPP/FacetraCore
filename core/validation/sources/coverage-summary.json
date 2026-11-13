@@ -1,0 +1,202 @@
+{
+  "date": "2026-10-12",
+  "toolchain": "Rust 1.90.0 / cargo-llvm-cov 0.9.1",
+  "real_database_tests": true,
+  "branch_coverage": null,
+  "groups": {
+    "sources": {
+      "lines": {
+        "count": 1286,
+        "covered": 1248,
+        "percent": 97.05
+      },
+      "regions": {
+        "count": 2359,
+        "covered": 2179,
+        "percent": 92.37
+      }
+    },
+    "data_pipeline": {
+      "lines": {
+        "count": 1265,
+        "covered": 1101,
+        "percent": 87.04
+      },
+      "regions": {
+        "count": 2315,
+        "covered": 1948,
+        "percent": 84.15
+      }
+    },
+    "entire_core": {
+      "lines": {
+        "count": 3750,
+        "covered": 3330,
+        "percent": 88.8
+      },
+      "regions": {
+        "count": 7113,
+        "covered": 5995,
+        "percent": 84.28
+      }
+    }
+  },
+  "files": {
+    "echarts.rs": {
+      "lines": {
+        "count": 266,
+        "covered": 262,
+        "percent": 98.5
+      },
+      "regions": {
+        "count": 471,
+        "covered": 449,
+        "percent": 95.33
+      }
+    },
+    "engine.rs": {
+      "lines": {
+        "count": 156,
+        "covered": 146,
+        "percent": 93.59
+      },
+      "regions": {
+        "count": 289,
+        "covered": 252,
+        "percent": 87.2
+      }
+    },
+    "git.rs": {
+      "lines": {
+        "count": 847,
+        "covered": 647,
+        "percent": 76.39
+      },
+      "regions": {
+        "count": 1805,
+        "covered": 1287,
+        "percent": 71.3
+      }
+    },
+    "lib.rs": {
+      "lines": {
+        "count": 86,
+        "covered": 72,
+        "percent": 83.72
+      },
+      "regions": {
+        "count": 163,
+        "covered": 132,
+        "percent": 80.98
+      }
+    },
+    "runtime.rs": {
+      "lines": {
+        "count": 543,
+        "covered": 471,
+        "percent": 86.74
+      },
+      "regions": {
+        "count": 1020,
+        "covered": 848,
+        "percent": 83.14
+      }
+    },
+    "sources/cache.rs": {
+      "lines": {
+        "count": 118,
+        "covered": 111,
+        "percent": 94.07
+      },
+      "regions": {
+        "count": 189,
+        "covered": 171,
+        "percent": 90.48
+      }
+    },
+    "sources/data.rs": {
+      "lines": {
+        "count": 218,
+        "covered": 212,
+        "percent": 97.25
+      },
+      "regions": {
+        "count": 400,
+        "covered": 376,
+        "percent": 94.0
+      }
+    },
+    "sources/database.rs": {
+      "lines": {
+        "count": 593,
+        "covered": 578,
+        "percent": 97.47
+      },
+      "regions": {
+        "count": 1110,
+        "covered": 1014,
+        "percent": 91.35
+      }
+    },
+    "sources/http.rs": {
+      "lines": {
+        "count": 125,
+        "covered": 122,
+        "percent": 97.6
+      },
+      "regions": {
+        "count": 260,
+        "covered": 243,
+        "percent": 93.46
+      }
+    },
+    "sources/mod.rs": {
+      "lines": {
+        "count": 111,
+        "covered": 107,
+        "percent": 96.4
+      },
+      "regions": {
+        "count": 194,
+        "covered": 184,
+        "percent": 94.85
+      }
+    },
+    "sources/template.rs": {
+      "lines": {
+        "count": 121,
+        "covered": 118,
+        "percent": 97.52
+      },
+      "regions": {
+        "count": 206,
+        "covered": 191,
+        "percent": 92.72
+      }
+    },
+    "spec.rs": {
+      "lines": {
+        "count": 436,
+        "covered": 358,
+        "percent": 82.11
+      },
+      "regions": {
+        "count": 793,
+        "covered": 641,
+        "percent": 80.83
+      }
+    },
+    "sql.rs": {
+      "lines": {
+        "count": 130,
+        "covered": 126,
+        "percent": 96.92
+      },
+      "regions": {
+        "count": 213,
+        "covered": 207,
+        "percent": 97.18
+      }
+    }
+  }
+}

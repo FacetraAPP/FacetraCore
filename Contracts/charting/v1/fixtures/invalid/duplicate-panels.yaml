@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "kind": "Dashboard",
+  "metadata": {
+    "id": "dashboard",
+    "title": "Dashboard"
+  },
+  "tabs": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "layout": {
+        "type": "grid"
+      },
+      "panels": [
+        {
+          "id": "first",
+          "chart": "native",
+          "width": 6,
+          "row_span": 4,
+          "responsive": {
+            "compact": {
+              "card_height": 240
+            }
+          }
+        },
+        {
+          "id": "first",
+          "chart": "native",
+          "width": 6,
+          "row_span": 4,
+          "responsive": {
+            "compact": {
+              "card_height": 240
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

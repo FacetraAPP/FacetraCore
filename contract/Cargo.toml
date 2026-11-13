@@ -1,0 +1,20 @@
+[package]
+name = "facetra-contract"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.90"
+publish = false
+license.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+serde_yaml_ng = "=0.10.0"
+serde_path_to_error = "0.1"
+schemars = "=1.2.3"
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+url = "2"
+rhai = { version = "=1.27.0", default-features = false, features = ["std", "sync", "serde", "no_module", "no_function", "no_time"] }
+
+jsonschema = { version = "0.33", default-features = false }
+

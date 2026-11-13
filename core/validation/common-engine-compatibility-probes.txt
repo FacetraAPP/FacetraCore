@@ -1,0 +1,22 @@
+FACETRA_SQL nested-comment swift=false rust=false
+FACETRA_SQL timezone swift=2026-01-01 20:00:00+08 rust=2026-01-01 20:00:00+08 equal=true
+FACETRA_YAML '001' swift=true rust=true equal=true
+FACETRA_YAML "12" swift=true rust=true equal=true
+FACETRA_YAML 'true' swift=true rust=true equal=true
+FACETRA_YAML yes swift=false rust=true equal=false
+FACETRA_YAML on swift=false rust=true equal=false
+FACETRA_YAML true swift=false rust=false equal=true
+FACETRA_YAML 012 swift=false rust=true equal=false
+FACETRA_YAML 0o12 swift=false rust=false equal=true
+FACETRA_YAML 1:20 swift=false rust=true equal=false
+FACETRA_YAML 2026-01-01 swift=false rust=true equal=false
+FACETRA_YAML .nan swift=false rust=false equal=true
+FACETRA_YAML null swift=false rust=false equal=true
+FACETRA_YAML 12.0 swift=false rust=false equal=true
+FACETRA_YAML integral-float swift=true rust=true equal=true
+FACETRA_YAML anchor swift=true rust=true equal=true
+FACETRA_YAML merge swift=true rust=true equal=true
+FACETRA_YAML duplicate-key swift=false rust=false equal=true
+FACETRA_YAML numeric-string-field swift=false rust=false equal=true
+FACETRA_YAML explicit-string-tag swift=true rust=true equal=true
+✔ Test run with 9 tests in 2 suites passed after 6.082 seconds.

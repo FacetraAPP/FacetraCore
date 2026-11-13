@@ -1,0 +1,6 @@
+metadata: {id: merged, title: Merge defaults}
+sources:
+  input: &input {source: duckdb, file: data/input.csv}
+  alias: {<<: *input, display: df}
+dataset: {id: data, sources: [{id: input, ref: '#/sources/alias'}]}
+chart: {dataset: data, renderer: value, value: amount}

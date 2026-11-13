@@ -1,0 +1,34 @@
+params:
+  - { name: symbol, label: 股票代码, type: string, default: "600519.SH", options: ["600519.SH", "300750.SZ", "000001.SZ"] }
+sources: {}
+dataset:
+  id: monthly
+  sources:
+    - id: prices
+      ref: "example_price.yaml#/sources/prices"
+      with:
+        symbol: { param: symbol }
+    - { id: symbols, ref: "example_price.yaml#/sources/symbols" }
+  sql: |
+    SELECT strftime(CAST(p.trade_date AS DATE), '%Y-%m') AS month,
+           s.name AS symbol_name,
+           AVG(CAST(p.close AS DOUBLE)) AS average_close,
+           COUNT(*) AS trading_days,
+           CAST(SUM(CAST(p.volume AS BIGINT)) AS BIGINT) AS volume
+    FROM prices p LEFT JOIN symbols s ON p.symbol = s.symbol
+    WHERE p.symbol = $symbol
+    GROUP BY month, s.name
+    ORDER BY month
+metadata:
+  id: example_monthly
+  title: 月度均价
+chart:
+  dataset: monthly
+  renderer: echarts
+  option:
+    tooltip: {trigger: axis}
+    grid: {left: 12, right: 18, top: 24, bottom: 24, containLabel: true}
+    xAxis: {type: category, data: {from: monthly, field: month}}
+    yAxis: {type: value, scale: true}
+    series:
+      - {type: bar, data: {from: monthly, field: average_close}}

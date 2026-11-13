@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "id": "native",
+    "title": "Native chart"
+  },
+  "sources": {
+    "input": {
+      "source": "http",
+      "url": "https://example.com/{{ params.day }}",
+      "format": "json"
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "input",
+        "ref": "#/sources/input"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "echarts",
+    "option": {
+      "series": [
+        {
+          "type": "line",
+          "data": {
+            "from": "data",
+            "field": "value"
+          }
+        }
+      ]
+    }
+  },
+  "params": [
+    {
+      "name": "day",
+      "type": "string",
+      "default": "x",
+      "options": {
+        "ref": "#/sources/input"
+      }
+    }
+  ]
+}

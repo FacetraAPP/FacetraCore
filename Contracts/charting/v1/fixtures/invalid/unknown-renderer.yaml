@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "id": "native",
+    "title": "Native chart"
+  },
+  "sources": {
+    "input": {
+      "source": "duckdb",
+      "file": "data/input.csv"
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "input",
+        "ref": "#/sources/input"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "unknown",
+    "option": {}
+  }
+}

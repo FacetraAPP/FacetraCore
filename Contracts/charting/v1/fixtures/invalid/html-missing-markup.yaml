@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "id": "html_contract",
+    "title": "HTML"
+  },
+  "sources": {
+    "input": {
+      "source": "duckdb",
+      "file": "data/input.csv"
+    }
+  },
+  "dataset": {
+    "id": "values",
+    "sources": [
+      {
+        "id": "raw",
+        "ref": "#/sources/input"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "values",
+    "renderer": "html",
+    "option": {
+      "data": {
+        "rows": {
+          "from": "values",
+          "rows": true
+        }
+      }
+    }
+  }
+}

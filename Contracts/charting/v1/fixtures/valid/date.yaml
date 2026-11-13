@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "id": "date",
+    "title": "Native chart"
+  },
+  "sources": {
+    "input": {
+      "source": "duckdb",
+      "file": "data/input.csv"
+    }
+  },
+  "dataset": {
+    "id": "data",
+    "sources": [
+      {
+        "id": "input",
+        "ref": "#/sources/input"
+      }
+    ]
+  },
+  "chart": {
+    "dataset": "data",
+    "renderer": "echarts",
+    "option": {
+      "series": [
+        {
+          "type": "line",
+          "data": {
+            "from": "data",
+            "field": "value"
+          }
+        }
+      ]
+    }
+  },
+  "params": [
+    {
+      "name": "day",
+      "type": "date",
+      "default": "2024-02-29"
+    },
+    {
+      "name": "count",
+      "type": "integer",
+      "default": 12.0
+    },
+    {
+      "name": "optional",
+      "type": "date",
+      "required": false,
+      "default": "",
+      "minimum": null,
+      "maximum": null
+    }
+  ]
+}

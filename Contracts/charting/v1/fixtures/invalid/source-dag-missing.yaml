@@ -1,0 +1,21 @@
+metadata: {id: source_dag, title: Chained HTTP sources}
+sources:
+  login:
+    source: http
+    method: post
+    url: https://example.com/login
+    json: {user: demo}
+  items:
+    source: http
+    depends_on: [login]
+    url: https://example.com/items
+    headers: {Authorization: 'Bearer {{ sources.login.token }}'}
+  detail:
+    source: http
+    depends_on: [missing]
+    url: https://example.com/detail
+    params: {}
+dataset:
+  id: data
+  sources: [{id: raw, ref: '#/sources/detail'}]
+chart: {dataset: data, renderer: value, value: count}

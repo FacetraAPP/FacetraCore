@@ -1,0 +1,93 @@
+{
+  "backend" : "swift",
+  "cache" : "cold",
+  "duckdb" : "v1.6.0-dev11145",
+  "input_rows" : 100000,
+  "median_ms" : {
+    "echarts_prepare" : 0.030415999999999999,
+    "open_and_import" : 106.316042,
+    "query_and_frame" : 33.286791000000001,
+    "response_encode" : 0.28112500000000001,
+    "total" : 142.98050000000001,
+    "yaml_and_resolve" : 0.46325
+  },
+  "note" : "Swift test executable statically links Swift DuckDB; Rust modes additionally dlopen Rust DuckDB. RSS includes harness and fixture generation.",
+  "output_bytes" : 5554,
+  "output_rows" : 100,
+  "process_peak_rss_mib" : 114.78125,
+  "samples_ms" : [
+    {
+      "echarts_prepare" : 0.037957999999999999,
+      "open_and_import" : 111.62070799999999,
+      "query_and_frame" : 34.253875000000001,
+      "response_encode" : 0.50720799999999999,
+      "total" : 151.42991699999999,
+      "yaml_and_resolve" : 2.0334590000000001
+    },
+    {
+      "echarts_prepare" : 0.027792000000000001,
+      "open_and_import" : 105.184917,
+      "query_and_frame" : 33.367916000000001,
+      "response_encode" : 0.29108299999999998,
+      "total" : 142.229333,
+      "yaml_and_resolve" : 0.45800000000000002
+    },
+    {
+      "echarts_prepare" : 0.028083,
+      "open_and_import" : 106.316042,
+      "query_and_frame" : 33.0655,
+      "response_encode" : 0.27612500000000001,
+      "total" : 142.98050000000001,
+      "yaml_and_resolve" : 0.47175
+    },
+    {
+      "echarts_prepare" : 0.033542000000000002,
+      "open_and_import" : 105.21837499999999,
+      "query_and_frame" : 33.286791000000001,
+      "response_encode" : 0.28112500000000001,
+      "total" : 142.12354099999999,
+      "yaml_and_resolve" : 0.466916
+    },
+    {
+      "echarts_prepare" : 0.028250000000000001,
+      "open_and_import" : 107.778959,
+      "query_and_frame" : 33.036833000000001,
+      "response_encode" : 0.279084,
+      "total" : 144.44737499999999,
+      "yaml_and_resolve" : 0.46325
+    },
+    {
+      "echarts_prepare" : 0.03125,
+      "open_and_import" : 106.73679199999999,
+      "query_and_frame" : 33.707084000000002,
+      "response_encode" : 0.25787500000000002,
+      "total" : 144.28620900000001,
+      "yaml_and_resolve" : 0.46804200000000001
+    },
+    {
+      "echarts_prepare" : 0.032125000000000001,
+      "open_and_import" : 105.268542,
+      "query_and_frame" : 33.358207999999998,
+      "response_encode" : 0.28112500000000001,
+      "total" : 142.37225000000001,
+      "yaml_and_resolve" : 0.43433300000000002
+    },
+    {
+      "echarts_prepare" : 0.027208,
+      "open_and_import" : 105.709333,
+      "query_and_frame" : 33.169790999999996,
+      "response_encode" : 0.28225,
+      "total" : 142.63487499999999,
+      "yaml_and_resolve" : 0.45987499999999998
+    },
+    {
+      "echarts_prepare" : 0.030415999999999999,
+      "open_and_import" : 106.647417,
+      "query_and_frame" : 32.712040999999999,
+      "response_encode" : 0.27775,
+      "total" : 143.15866700000001,
+      "yaml_and_resolve" : 0.44158399999999998
+    }
+  ],
+  "scenario" : "aggregate"
+}

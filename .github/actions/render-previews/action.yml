@@ -1,0 +1,88 @@
+name: Render Facetra previews
+description: Render a Facetra workspace to PNG previews and a manifest.
+inputs:
+  core-repository:
+    description: Repository containing FacetraCore.
+    required: false
+    default: FacetraAPP/FacetraCore
+  core-ref:
+    description: FacetraCore commit, tag or branch to use.
+    required: false
+    default: main
+  workspace:
+    description: Workspace directory containing charts/ and data/.
+    required: true
+  out-dir:
+    description: Directory for PNG files and manifest.json.
+    required: true
+  width:
+    description: Logical image width.
+    required: false
+    default: "1200"
+  height:
+    description: Logical image height.
+    required: false
+    default: "700"
+  scale:
+    description: Device scale factor.
+    required: false
+    default: "1"
+  locale:
+    description: Locale used for resource text.
+    required: false
+    default: "en"
+  force:
+    description: Replace existing PNG files.
+    required: false
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - name: Check out FacetraCore
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.core-repository }}
+        ref: ${{ inputs.core-ref }}
+        path: .facetra-core
+        persist-credentials: false
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "24"
+    - name: Install pinned Rust toolchain
+      shell: bash
+      run: rustup toolchain install 1.90.0 --profile minimal
+    - name: Install Node dependencies
+      shell: bash
+      run: |
+        set -euo pipefail
+        CORE_ROOT="$GITHUB_WORKSPACE/.facetra-core"
+        npm ci --prefix "$CORE_ROOT/renderers" --no-audit --no-fund
+        "$CORE_ROOT/renderers/node_modules/.bin/playwright" install --with-deps chromium
+    - name: Render previews
+      shell: bash
+      env:
+        CORE_ROOT: ${{ github.workspace }}/.facetra-core
+        WORKSPACE: ${{ inputs.workspace }}
+        OUT_DIR: ${{ inputs.out-dir }}
+        WIDTH: ${{ inputs.width }}
+        HEIGHT: ${{ inputs.height }}
+        SCALE: ${{ inputs.scale }}
+        LOCALE: ${{ inputs.locale }}
+        FORCE: ${{ inputs.force }}
+      run: |
+        set -euo pipefail
+        mkdir -p "$OUT_DIR"
+        args=(
+          run --release --locked --manifest-path "$CORE_ROOT/cli/Cargo.toml"
+          -- --json batch
+          --workspace "$WORKSPACE"
+          --out-dir "$OUT_DIR"
+          --width "$WIDTH"
+          --height "$HEIGHT"
+          --scale "$SCALE"
+          --locale "$LOCALE"
+          --renderer-dir "$CORE_ROOT/renderers"
+        )
+        if [ "$FORCE" = "true" ]; then args+=(--force); fi
+        cargo "${args[@]}" | tee "$OUT_DIR/manifest.json"
+

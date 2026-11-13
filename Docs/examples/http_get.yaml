@@ -1,0 +1,34 @@
+params:
+  - { name: symbol, type: string, default: "600519.SH" }
+sources:
+  prices:
+    source: http
+    method: get
+    url: "{{ connections.market.endpoint }}/prices"
+    params:
+      symbol: "{{ params.symbol }}"
+      apikey: "{{ connections.market.api_key }}"
+    headers:
+      Authorization: "Bearer {{ connections.market.token }}"
+    format: json
+    recordsPath: [data, items]
+dataset:
+  id: prices
+  sources:
+    - { id: raw, ref: "#/sources/prices" }
+  sql: |
+    SELECT CAST(trade_date AS DATE) AS trade_date, CAST(close AS DOUBLE) AS close
+    FROM raw ORDER BY trade_date
+metadata:
+  id: http_get
+  title: HTTP GET 行情
+chart:
+  dataset: prices
+  renderer: echarts
+  option:
+    tooltip: {trigger: axis}
+    grid: {left: 12, right: 18, top: 24, bottom: 24, containLabel: true}
+    xAxis: {type: category, data: {from: prices, field: trade_date}}
+    yAxis: {type: value, scale: true}
+    series:
+      - {type: line, data: {from: prices, field: close}, showSymbol: false}

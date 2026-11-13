@@ -1,0 +1,9 @@
+{
+  "contractVersion": "1",
+  "status": "pre-release",
+  "schemaSha256": {
+    "chart.schema.json": "c9ddb1407bfe96fbbc8f7594301be1a88d276148f87e804be3f38d36d4707cdb",
+    "dashboard.schema.json": "b6443da4ec766c0f2b4b91542893f6bfbde75bf21d0cd6f5b615c636a5e58714",
+    "common.schema.json": "305424a152e514ac41510a246ce44b672db30b270a9ae0769f81b4b46ee167b2"
+  }
+}

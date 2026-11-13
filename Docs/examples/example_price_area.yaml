@@ -1,0 +1,26 @@
+params:
+  - { name: symbol, label: 股票代码, type: string, default: "600519.SH", options: ["600519.SH", "300750.SZ", "000001.SZ"] }
+  - { name: days, label: 交易日数, type: integer, default: 60, minimum: 1, maximum: 180, options: [30, 60, 120, 180] }
+  - { name: ma_window, label: 均线窗口, type: integer, default: 20, minimum: 2, maximum: 60, advanced: true }
+sources: {}
+dataset:
+  id: shared_prices
+  ref: "example_price.yaml#/dataset"
+  with:
+    symbol: { param: symbol }
+    days: { param: days }
+    ma_window: { param: ma_window }
+metadata:
+  id: example_price_area
+  title: 同一 Dataset 的面积图
+chart:
+  dataset: shared_prices
+  renderer: echarts
+  option:
+    tooltip: {trigger: axis}
+    grid: {left: 12, right: 18, top: 24, bottom: 24, containLabel: true}
+    xAxis: {type: category, data: {from: shared_prices, field: trade_date}}
+    yAxis: {type: value, scale: true}
+    series:
+      - {type: line, name: close, data: {from: shared_prices, field: close}, showSymbol: false, areaStyle: {opacity: 0.12}}
+      - {type: line, name: ma, data: {from: shared_prices, field: ma}, showSymbol: false, lineStyle: {type: dashed}}
