@@ -273,13 +273,22 @@ fn client(
             }
             attempt.follow()
         }));
+    let mut custom_roots = Vec::new();
     for pem in &ctx.http_roots {
         let certificates = reqwest::Certificate::from_pem_bundle(pem.as_bytes())
             .map_err(|_| "Invalid host certificate")?;
         if certificates.is_empty() {
             return Err("Invalid host certificate".into());
         }
-        for certificate in certificates {
+        custom_roots.extend(certificates);
+    }
+    if !custom_roots.is_empty() {
+        let mut probe = reqwest::Client::builder().tls_built_in_root_certs(false);
+        for certificate in &custom_roots {
+            probe = probe.add_root_certificate(certificate.clone());
+        }
+        probe.build().map_err(|_| "Invalid host certificate")?;
+        for certificate in custom_roots {
             builder = builder.add_root_certificate(certificate);
         }
     }
