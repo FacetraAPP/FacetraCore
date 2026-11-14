@@ -26,11 +26,22 @@ wire fixtures run only on loopback, using generated TLS certificates and no user
 credentials. The optional real-server suite starts isolated temporary PostgreSQL
 and MySQL instances; it never uses an existing workspace database.
 
-The Facetra app repository consumes this repository as the `Rust` submodule and
-statically links `Rust/core/target/release/libfacetra_pipeline.a`. Its
-`Tools/build-rust-app.sh` creates the macOS/iOS archive. Native DuckDB
-compilation is expensive; build platform slices sequentially. The shared core
-deployment floors remain macOS 14/iOS 17.
+The Facetra app repository can consume the rolling `main-latest` prerelease from
+this repository instead of compiling the Rust source locally. The release
+contains `FacetraPipeline.xcframework.zip`, the renderer and contract support
+bundle, a manifest and SHA-256 checksums. The repository remains available as
+the `Rust` submodule for source-level development and debugging.
+
+To build the same artifacts locally on macOS with Xcode installed:
+
+```sh
+Tools/build-apple-artifacts.sh
+```
+
+The script produces macOS arm64/x86_64, iOS device arm64 and iOS simulator
+arm64/x86_64 slices, then packages them under `build/apple/`. Native DuckDB
+compilation is expensive; the script builds platform slices sequentially. The
+shared core deployment floors remain macOS 14/iOS 17.
 
 For iOS builds, the script gives host build scripts and procedural macros the
 macOS SDK; Rust and the `cc` crate select the iOS SDK from the target triple.
@@ -66,8 +77,9 @@ workspace implementation used by the app.
 
 App-level macOS and iOS builds run in the
 [Facetra repository](https://github.com/FacetraAPP/Facetra), where this
-repository is checked out as `Rust/`. The core still builds the iOS slices used
-by those builds:
+repository can be checked out as `Rust/`. The `Apple artifacts` workflow builds
+and publishes the rolling prerelease after `Quality` succeeds on `main`. To
+build individual iOS slices manually:
 
 ```sh
 cargo +1.90.0 build --release --locked --target aarch64-apple-ios -p facetra-pipeline

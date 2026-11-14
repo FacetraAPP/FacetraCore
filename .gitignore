@@ -1,4 +1,5 @@
 target/
+build/
 renderers/node_modules/
 __pycache__/
 *.pyc

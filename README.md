@@ -33,6 +33,32 @@ npm ci --prefix renderers
 ./renderers/node_modules/.bin/playwright install chromium
 ```
 
+## Apple artifacts
+
+Every successful `Quality` run on `main` builds a rolling prerelease at
+[FacetraCore main](https://github.com/FacetraAPP/FacetraCore/releases/tag/main-latest).
+It is marked as a prerelease and is overwritten by later main builds.
+
+The release contains:
+
+- `FacetraPipeline.xcframework.zip` with macOS arm64/x86_64, iOS device arm64 and
+  iOS simulator arm64/x86_64 slices plus the C header and module map.
+- `FacetraCoreSupport.zip` with renderer assets, Chart/Dashboard contracts,
+  examples, headers and third-party notices.
+- `FacetraCore-main.json` with the source commit, workflow run, deployment
+  floors and SHA-256 checksums.
+- `SHA256SUMS` for download verification.
+
+Build and package the same artifacts locally on macOS with Xcode installed:
+
+```sh
+Tools/build-apple-artifacts.sh
+```
+
+Outputs are written to `build/apple/`. The rolling `main-latest` release is a
+mutable development channel; consumers must verify `SHA256SUMS` or the manifest
+checksum before linking the static libraries.
+
 ## Render a chart
 
 ```sh

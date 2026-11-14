@@ -1,0 +1,127 @@
+name: Apple artifacts
+
+on:
+  workflow_run:
+    workflows: ["Quality"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/apple-artifacts.yml"
+      - "Tools/build-apple-artifacts.sh"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apple-artifacts-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: >-
+      github.event_name == 'pull_request' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: macos-latest
+    timeout-minutes: 90
+    outputs:
+      sha: ${{ steps.source.outputs.sha }}
+    steps:
+      - name: Resolve source revision
+        id: source
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "sha=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.source.outputs.sha }}
+          fetch-depth: 1
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: apple-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+          restore-keys: |
+            apple-${{ runner.os }}-${{ runner.arch }}-
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt,clippy
+      - name: Build Apple artifacts
+        env:
+          COMMIT_SHA: ${{ steps.source.outputs.sha }}
+        run: Tools/build-apple-artifacts.sh
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FacetraCore-apple-${{ steps.source.outputs.sha }}
+          path: |
+            build/apple/FacetraPipeline.xcframework.zip
+            build/apple/FacetraCoreSupport.zip
+            build/apple/FacetraCore-main.json
+            build/apple/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    needs: build
+    if: >-
+      github.event_name == 'workflow_run' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: FacetraCore-apple-${{ needs.build.outputs.sha }}
+          path: build/apple
+      - name: Verify and publish rolling prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT_SHA: ${{ needs.build.outputs.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd build/apple
+          sha256sum -c SHA256SUMS
+          cat > release-notes.md <<EOF
+          Automatic build of the main branch.
+
+          - Commit: $COMMIT_SHA
+          - Workflow run: $RUN_URL
+          - Rust toolchain: 1.90.0
+          - Deployment floors: macOS 14 / iOS 17
+
+          This is a mutable development prerelease. Verify SHA256SUMS before use.
+          EOF
+          if gh release view main-latest --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit main-latest \
+              --repo "$GITHUB_REPOSITORY" \
+              --prerelease \
+              --latest=false \
+              --notes-file release-notes.md
+          else
+            gh release create main-latest \
+              --repo "$GITHUB_REPOSITORY" \
+              --prerelease \
+              --latest=false \
+              --target "$COMMIT_SHA" \
+              --title "FacetraCore main" \
+              --notes-file release-notes.md
+          fi
+          gh release upload main-latest \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber \
+            FacetraPipeline.xcframework.zip \
+            FacetraCoreSupport.zip \
+            FacetraCore-main.json \
+            SHA256SUMS
