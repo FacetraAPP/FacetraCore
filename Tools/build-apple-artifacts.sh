@@ -165,6 +165,15 @@ for library in "$MACOS_LIBRARY" "$IOS_LIBRARY" "$IOS_SIM_LIBRARY"; do
     require_arm64 "$library"
 done
 
+NORMALIZED_SLICES="$WORK/xcframework-slices"
+mkdir -p "$NORMALIZED_SLICES/macos" "$NORMALIZED_SLICES/ios" "$NORMALIZED_SLICES/ios-sim"
+cp "$MACOS_LIBRARY" "$NORMALIZED_SLICES/macos/libfacetra_pipeline.a"
+cp "$IOS_LIBRARY" "$NORMALIZED_SLICES/ios/libfacetra_pipeline.a"
+cp "$IOS_SIM_LIBRARY" "$NORMALIZED_SLICES/ios-sim/libfacetra_pipeline.a"
+MACOS_LIBRARY="$NORMALIZED_SLICES/macos/libfacetra_pipeline.a"
+IOS_LIBRARY="$NORMALIZED_SLICES/ios/libfacetra_pipeline.a"
+IOS_SIM_LIBRARY="$NORMALIZED_SLICES/ios-sim/libfacetra_pipeline.a"
+
 XCFRAMEWORK="$OUTPUT/FacetraPipeline.xcframework"
 if [ -e "$XCFRAMEWORK" ]; then
     rm -rf "$XCFRAMEWORK"
@@ -175,9 +184,10 @@ xcrun xcodebuild -create-xcframework \
     -library "$IOS_SIM_LIBRARY" -headers "$ROOT/core/include" \
     -output "$XCFRAMEWORK"
 
-SLICE_COUNT=$(find "$XCFRAMEWORK" -type f -name 'libfacetra_pipeline.a' | wc -l | tr -d ' ')
+SLICE_COUNT=$(find "$XCFRAMEWORK" -type f -name '*.a' | wc -l | tr -d ' ')
 if [ "$SLICE_COUNT" != 3 ]; then
     echo "Expected three XCFramework slices, found $SLICE_COUNT." >&2
+    find "$XCFRAMEWORK" -maxdepth 3 -type f -print >&2
     exit 1
 fi
 
