@@ -6,14 +6,54 @@ OUTPUT=${FACETRA_APPLE_OUTPUT:-"$ROOT/build/apple"}
 CARGO_TARGET_DIR=${CARGO_TARGET_DIR:-"$ROOT/target"}
 RUST_TOOLCHAIN=1.90.0
 JOBS=${FACETRA_BUILD_JOBS:-4}
+BUILD_ONLY=${FACETRA_APPLE_BUILD_ONLY:-0}
+SLICES_DIR=${FACETRA_APPLE_SLICES_DIR:-}
+DEFAULT_TARGETS=(
+    aarch64-apple-darwin
+    aarch64-apple-ios
+    aarch64-apple-ios-sim
+)
 export CARGO_TARGET_DIR
 
 if [ "$(uname -s)" != Darwin ]; then
     echo "Apple artifacts must be built on macOS." >&2
     exit 2
 fi
+if [ "$BUILD_ONLY" != 0 ] && [ "$BUILD_ONLY" != 1 ]; then
+    echo "FACETRA_APPLE_BUILD_ONLY must be 0 or 1." >&2
+    exit 2
+fi
+if [ "$BUILD_ONLY" = 1 ] && [ -n "$SLICES_DIR" ]; then
+    echo "FACETRA_APPLE_BUILD_ONLY and FACETRA_APPLE_SLICES_DIR are mutually exclusive." >&2
+    exit 2
+fi
 
-for command in cargo rustup rsync zip shasum python3; do
+TARGETS=("${DEFAULT_TARGETS[@]}")
+if [ -n "${FACETRA_APPLE_TARGETS:-}" ]; then
+    read -r -a TARGETS <<< "$FACETRA_APPLE_TARGETS"
+fi
+if [ "${#TARGETS[@]}" -eq 0 ]; then
+    echo "At least one Apple target is required." >&2
+    exit 2
+fi
+for target in "${TARGETS[@]}"; do
+    case "$target" in
+        aarch64-apple-darwin | aarch64-apple-ios | aarch64-apple-ios-sim) ;;
+        *)
+            echo "Unsupported Apple target: $target" >&2
+            exit 2
+            ;;
+    esac
+done
+
+COMMANDS=(xcrun)
+if [ "$BUILD_ONLY" = 0 ]; then
+    COMMANDS+=(rsync zip shasum python3)
+fi
+if [ -z "$SLICES_DIR" ]; then
+    COMMANDS+=(cargo rustup)
+fi
+for command in "${COMMANDS[@]}"; do
     if ! command -v "$command" >/dev/null 2>&1; then
         echo "Missing required command: $command" >&2
         exit 2
@@ -28,16 +68,22 @@ mkdir -p "$OUTPUT"
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/facetra-apple-artifacts.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
 
-rustup target add --toolchain "$RUST_TOOLCHAIN" \
-    aarch64-apple-darwin \
-    x86_64-apple-darwin \
-    aarch64-apple-ios \
-    aarch64-apple-ios-sim \
-    x86_64-apple-ios
+platform_for_target() {
+    case "$1" in
+        aarch64-apple-darwin) echo macosx ;;
+        aarch64-apple-ios) echo iphoneos ;;
+        aarch64-apple-ios-sim) echo iphonesimulator ;;
+        *)
+            echo "Unsupported Apple target: $1" >&2
+            exit 2
+            ;;
+    esac
+}
 
 build_slice() {
     local target=$1
     local platform=$2
+    local sdkroot
     case "$platform" in
         macosx)
             env -u SDKROOT \
@@ -45,8 +91,14 @@ build_slice() {
                 cargo +"$RUST_TOOLCHAIN" build --release --locked \
                 --target "$target" -p facetra-pipeline -j "$JOBS"
             ;;
-        ios)
-            local sdkroot
+        iphoneos)
+            sdkroot=$(xcrun --sdk macosx --show-sdk-path)
+            SDKROOT="$sdkroot" \
+                IPHONEOS_DEPLOYMENT_TARGET=17.0 \
+                cargo +"$RUST_TOOLCHAIN" build --release --locked \
+                --target "$target" -p facetra-pipeline -j "$JOBS"
+            ;;
+        iphonesimulator)
             sdkroot=$(xcrun --sdk macosx --show-sdk-path)
             SDKROOT="$sdkroot" \
                 IPHONEOS_DEPLOYMENT_TARGET=17.0 \
@@ -58,50 +110,69 @@ build_slice() {
             exit 2
             ;;
     esac
-    SLICE_LIBRARY="$CARGO_TARGET_DIR/$target/release/libfacetra_pipeline.a"
-    if [ ! -f "$SLICE_LIBRARY" ]; then
-        echo "Rust did not produce $SLICE_LIBRARY" >&2
+}
+
+require_arm64() {
+    local library=$1
+    local architectures
+    architectures=$(xcrun lipo -archs "$library")
+    if [ "$architectures" != arm64 ]; then
+        echo "$library must contain only arm64 (found: $architectures)." >&2
         exit 1
     fi
 }
 
-build_slice aarch64-apple-darwin macosx
-MACOS_ARM64=$SLICE_LIBRARY
-build_slice x86_64-apple-darwin macosx
-MACOS_X86_64=$SLICE_LIBRARY
-build_slice aarch64-apple-ios ios
-IOS_ARM64=$SLICE_LIBRARY
-build_slice aarch64-apple-ios-sim ios
-IOS_SIM_ARM64=$SLICE_LIBRARY
-build_slice x86_64-apple-ios ios
-IOS_SIM_X86_64=$SLICE_LIBRARY
-
-MACOS_LIBRARY="$WORK/libfacetra_pipeline-macos.a"
-IOS_LIBRARY="$WORK/libfacetra_pipeline-ios.a"
-IOS_SIM_LIBRARY="$WORK/libfacetra_pipeline-ios-sim.a"
-xcrun lipo -create "$MACOS_ARM64" "$MACOS_X86_64" -output "$MACOS_LIBRARY"
-xcrun lipo -create "$IOS_ARM64" -output "$IOS_LIBRARY"
-xcrun lipo -create "$IOS_SIM_ARM64" "$IOS_SIM_X86_64" -output "$IOS_SIM_LIBRARY"
-
-require_architectures() {
-    local library=$1
-    shift
-    local architectures
-    architectures=$(xcrun lipo -archs "$library")
-    for architecture in "$@"; do
-        case " $architectures " in
-            *" $architecture "*) ;;
-            *)
-                echo "$library is missing $architecture (found: $architectures)" >&2
-                exit 1
-                ;;
-        esac
+if [ -z "$SLICES_DIR" ]; then
+    rustup target add --toolchain "$RUST_TOOLCHAIN" "${TARGETS[@]}"
+    for target in "${TARGETS[@]}"; do
+        platform=$(platform_for_target "$target")
+        build_slice "$target" "$platform"
+        slice="$CARGO_TARGET_DIR/$target/release/libfacetra_pipeline.a"
+        if [ ! -f "$slice" ]; then
+            echo "Rust did not produce $slice" >&2
+            exit 1
+        fi
+        require_arm64 "$slice"
+        if [ "$BUILD_ONLY" = 1 ]; then
+            output_slice="$OUTPUT/libfacetra_pipeline-$target.a"
+            cp "$slice" "$output_slice"
+            echo "Apple slice written to $output_slice"
+        fi
     done
-}
+fi
 
-require_architectures "$MACOS_LIBRARY" arm64 x86_64
-require_architectures "$IOS_LIBRARY" arm64
-require_architectures "$IOS_SIM_LIBRARY" arm64 x86_64
+if [ "$BUILD_ONLY" = 1 ]; then
+    exit 0
+fi
+
+if [ -z "$SLICES_DIR" ]; then
+    SLICES_DIR="$WORK/slices"
+    mkdir -p "$SLICES_DIR"
+    for target in "${TARGETS[@]}"; do
+        cp "$CARGO_TARGET_DIR/$target/release/libfacetra_pipeline.a" \
+            "$SLICES_DIR/libfacetra_pipeline-$target.a"
+    done
+fi
+
+MACOS_LIBRARY="$SLICES_DIR/libfacetra_pipeline-aarch64-apple-darwin.a"
+IOS_LIBRARY="$SLICES_DIR/libfacetra_pipeline-aarch64-apple-ios.a"
+IOS_SIM_LIBRARY="$SLICES_DIR/libfacetra_pipeline-aarch64-apple-ios-sim.a"
+for library in "$MACOS_LIBRARY" "$IOS_LIBRARY" "$IOS_SIM_LIBRARY"; do
+    if [ ! -f "$library" ]; then
+        echo "Missing Apple slice: $library" >&2
+        exit 1
+    fi
+    require_arm64 "$library"
+done
+
+NORMALIZED_SLICES="$WORK/xcframework-slices"
+mkdir -p "$NORMALIZED_SLICES/macos" "$NORMALIZED_SLICES/ios" "$NORMALIZED_SLICES/ios-sim"
+cp "$MACOS_LIBRARY" "$NORMALIZED_SLICES/macos/libfacetra_pipeline.a"
+cp "$IOS_LIBRARY" "$NORMALIZED_SLICES/ios/libfacetra_pipeline.a"
+cp "$IOS_SIM_LIBRARY" "$NORMALIZED_SLICES/ios-sim/libfacetra_pipeline.a"
+MACOS_LIBRARY="$NORMALIZED_SLICES/macos/libfacetra_pipeline.a"
+IOS_LIBRARY="$NORMALIZED_SLICES/ios/libfacetra_pipeline.a"
+IOS_SIM_LIBRARY="$NORMALIZED_SLICES/ios-sim/libfacetra_pipeline.a"
 
 XCFRAMEWORK="$OUTPUT/FacetraPipeline.xcframework"
 if [ -e "$XCFRAMEWORK" ]; then
@@ -113,9 +184,10 @@ xcrun xcodebuild -create-xcframework \
     -library "$IOS_SIM_LIBRARY" -headers "$ROOT/core/include" \
     -output "$XCFRAMEWORK"
 
-SLICE_COUNT=$(find "$XCFRAMEWORK" -type f -name 'libfacetra_pipeline.a' | wc -l | tr -d ' ')
+SLICE_COUNT=$(find "$XCFRAMEWORK" -type f -name '*.a' | wc -l | tr -d ' ')
 if [ "$SLICE_COUNT" != 3 ]; then
     echo "Expected three XCFramework slices, found $SLICE_COUNT." >&2
+    find "$XCFRAMEWORK" -maxdepth 3 -type f -print >&2
     exit 1
 fi
 
@@ -169,7 +241,7 @@ manifest = {
     "builtAt": built_at,
     "rustToolchain": "1.90.0",
     "deploymentTargets": {"macOS": "14.0", "iOS": "17.0"},
-    "slices": ["macOS arm64/x86_64", "iOS arm64", "iOS simulator arm64/x86_64"],
+    "slices": ["macOS arm64", "iOS arm64", "iOS simulator arm64"],
     "artifacts": {
         "xcframework": {
             "file": "FacetraPipeline.xcframework.zip",

@@ -38,11 +38,12 @@ npm ci --prefix renderers
 Every successful `Quality` run on `main` builds a rolling prerelease at
 [FacetraCore main](https://github.com/FacetraAPP/FacetraCore/releases/tag/main-latest).
 It is marked as a prerelease and is overwritten by later main builds.
+Superseded builds are cancelled so the release tracks the latest `main` commit.
 
 The release contains:
 
-- `FacetraPipeline.xcframework.zip` with macOS arm64/x86_64, iOS device arm64 and
-  iOS simulator arm64/x86_64 slices plus the C header and module map.
+- `FacetraPipeline.xcframework.zip` with macOS arm64, iOS device arm64 and iOS
+  simulator arm64 slices plus the C header and module map.
 - `FacetraCoreSupport.zip` with renderer assets, Chart/Dashboard contracts,
   examples, headers and third-party notices.
 - `FacetraCore-main.json` with the source commit, workflow run, deployment
@@ -58,6 +59,9 @@ Tools/build-apple-artifacts.sh
 Outputs are written to `build/apple/`. The rolling `main-latest` release is a
 mutable development channel; consumers must verify `SHA256SUMS` or the manifest
 checksum before linking the static libraries.
+
+The `main-latest` artifacts support Apple Silicon only. Intel Mac consumers
+must use an older release or build from source.
 
 ## Render a chart
 

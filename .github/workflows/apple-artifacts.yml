@@ -15,17 +15,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: apple-artifacts-${{ github.ref }}
-  cancel-in-progress: false
+  group: apple-artifacts-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-    if: >-
-      github.event_name == 'pull_request' ||
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
-    runs-on: macos-latest
-    timeout-minutes: 90
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       sha: ${{ steps.source.outputs.sha }}
     steps:
@@ -38,29 +34,74 @@ jobs:
           else
             echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
           fi
+
+  build:
+    needs: source
+    if: >-
+      github.event_name == 'pull_request' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: macos-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - aarch64-apple-darwin
+          - aarch64-apple-ios
+          - aarch64-apple-ios-sim
+    steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ steps.source.outputs.sha }}
+          ref: ${{ needs.source.outputs.sha }}
           fetch-depth: 1
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: apple-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
-          restore-keys: |
-            apple-${{ runner.os }}-${{ runner.arch }}-
       - name: Install pinned Rust toolchain
         run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt,clippy
-      - name: Build Apple artifacts
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: apple-artifacts
+          key: ${{ matrix.target }}
+          cache-on-failure: true
+          cache-bin: false
+          save-if: "${{ github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}"
+      - name: Build Apple slice
         env:
-          COMMIT_SHA: ${{ steps.source.outputs.sha }}
+          FACETRA_APPLE_TARGETS: ${{ matrix.target }}
+          FACETRA_APPLE_BUILD_ONLY: "1"
         run: Tools/build-apple-artifacts.sh
-      - name: Upload workflow artifact
+      - name: Upload Apple slice
         uses: actions/upload-artifact@v4
         with:
-          name: FacetraCore-apple-${{ steps.source.outputs.sha }}
+          name: FacetraPipeline-${{ matrix.target }}
+          path: build/apple/libfacetra_pipeline-${{ matrix.target }}.a
+          if-no-files-found: error
+          retention-days: 1
+
+  package:
+    needs: [source, build]
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.source.outputs.sha }}
+          fetch-depth: 1
+      - name: Download Apple slices
+        uses: actions/download-artifact@v4
+        with:
+          pattern: FacetraPipeline-*
+          path: build/apple/slices
+          merge-multiple: true
+      - name: Package Apple artifacts
+        env:
+          COMMIT_SHA: ${{ needs.source.outputs.sha }}
+          FACETRA_APPLE_SLICES_DIR: ${{ github.workspace }}/build/apple/slices
+        run: Tools/build-apple-artifacts.sh
+      - name: Upload packaged artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: FacetraCore-apple-${{ needs.source.outputs.sha }}
           path: |
             build/apple/FacetraPipeline.xcframework.zip
             build/apple/FacetraCoreSupport.zip
@@ -70,7 +111,7 @@ jobs:
           retention-days: 14
 
   publish:
-    needs: build
+    needs: [source, package]
     if: >-
       github.event_name == 'workflow_run' ||
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
@@ -81,12 +122,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: FacetraCore-apple-${{ needs.build.outputs.sha }}
+          name: FacetraCore-apple-${{ needs.source.outputs.sha }}
           path: build/apple
       - name: Verify and publish rolling prerelease
         env:
           GH_TOKEN: ${{ github.token }}
-          COMMIT_SHA: ${{ needs.build.outputs.sha }}
+          COMMIT_SHA: ${{ needs.source.outputs.sha }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         shell: bash
         run: |
@@ -100,6 +141,8 @@ jobs:
           - Workflow run: $RUN_URL
           - Rust toolchain: 1.90.0
           - Deployment floors: macOS 14 / iOS 17
+          - Slices: macOS arm64 / iOS arm64 / iOS simulator arm64
+          - Architecture support: Apple Silicon only
 
           This is a mutable development prerelease. Verify SHA256SUMS before use.
           EOF
