@@ -60,6 +60,8 @@ impl Http {
                 "-subj",
                 "/CN=localhost",
                 "-addext",
+                "basicConstraints=critical,CA:FALSE",
+                "-addext",
                 "subjectAltName=IP:127.0.0.1,DNS:localhost",
                 "-addext",
                 "extendedKeyUsage=serverAuth",

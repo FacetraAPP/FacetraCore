@@ -10,9 +10,65 @@ concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      browser: ${{ steps.paths.outputs.browser }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect browser-related changes
+        id: paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+            head="${{ github.event.pull_request.head.sha }}"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            base="${{ github.event.before }}"
+            head="${{ github.sha }}"
+          else
+            echo "browser=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! git cat-file -e "$base^{commit}" 2>/dev/null; then
+            base=$(git rev-list --max-count=1 --skip=1 "$head" 2>/dev/null || true)
+          fi
+          if [ -n "$base" ]; then
+            changed=$(git diff --name-only "$base" "$head")
+          else
+            changed=$(git show --pretty=format: --name-only "$head")
+          fi
+          if printf '%s\n' "$changed" | grep -Eq '^(renderers/|cli/|\.github/workflows/quality\.yml$)'; then
+            echo "browser=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "browser=false" >> "$GITHUB_OUTPUT"
+          fi
   rust:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt,clippy
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: quality
+          cache-on-failure: true
+      - name: Format
+        run: cargo +1.90.0 fmt --all --check
+      - name: Clippy
+        run: cargo +1.90.0 clippy --release --locked --all-targets -- -D warnings
+      - name: Tests
+        run: cargo +1.90.0 test --release --locked --workspace -j 4
+  browser:
+    needs: changes
+    if: needs.changes.outputs.browser == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,15 +77,17 @@ jobs:
           cache: npm
           cache-dependency-path: renderers/package-lock.json
       - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt,clippy
-      - name: Format
-        run: cargo +1.90.0 fmt --all --check
-      - name: Clippy
-        run: cargo +1.90.0 clippy --locked --all-targets -- -D warnings
-      - name: Contract and CLI tests
-        run: cargo +1.90.0 test --locked -p facetra-contract -p facetra-render
-      - name: Core tests
-        run: cargo +1.90.0 test --release --locked -p facetra-pipeline -j 4
+        run: rustup toolchain install 1.90.0 --profile minimal
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: browser
+          cache-on-failure: true
+      - name: Cache Playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('renderers/package-lock.json') }}
       - name: Install Playwright
         run: |
           npm ci --prefix renderers --no-audit --no-fund
@@ -37,5 +95,5 @@ jobs:
       - name: Browser rendering smoke test
         env:
           FACETRA_TEST_RENDER: "1"
-        run: cargo +1.90.0 test --locked -p facetra-render renders_a_png_when_explicitly_enabled -- --nocapture
+        run: cargo +1.90.0 test --release --locked -p facetra-render renders_a_png_when_explicitly_enabled -- --nocapture
 
