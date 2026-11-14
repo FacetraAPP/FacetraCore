@@ -38,10 +38,15 @@ To build the same artifacts locally on macOS with Xcode installed:
 Tools/build-apple-artifacts.sh
 ```
 
-The script produces macOS arm64/x86_64, iOS device arm64 and iOS simulator
-arm64/x86_64 slices, then packages them under `build/apple/`. Native DuckDB
-compilation is expensive; the script builds platform slices sequentially. The
-shared core deployment floors remain macOS 14/iOS 17.
+The script produces macOS arm64, iOS device arm64 and iOS simulator arm64
+slices, then packages them under `build/apple/`. Native DuckDB compilation is
+expensive; CI builds each target in a separate job and caches dependencies.
+Intel Mac slices are no longer published. The shared core deployment floors
+remain macOS 14/iOS 17.
+
+CI builds one slice per job with `FACETRA_APPLE_TARGETS` and
+`FACETRA_APPLE_BUILD_ONLY=1`, then packages the downloaded libraries by setting
+`FACETRA_APPLE_SLICES_DIR`.
 
 For iOS builds, the script gives host build scripts and procedural macros the
 macOS SDK; Rust and the `cc` crate select the iOS SDK from the target triple.
